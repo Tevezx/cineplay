@@ -26,7 +26,8 @@ public class FilmeController {
 
     @GetMapping()
     public ResponseEntity<List<Filme>> findAll() {
-        String sql = "SELECT * FROM filme";
+        String sql = "SELECT id_filme AS id, titulo, sinopse, duracao, classificacao, genero, " +
+                "dt_lancamento AS dataLancamento, img_url AS imagem_url FROM filme";
 
         List<Filme> filmes = template.query(sql,
                 new BeanPropertyRowMapper<>(Filme.class));
@@ -36,7 +37,7 @@ public class FilmeController {
 
     @PostMapping()
     public ResponseEntity<Filme> save(@RequestBody Filme filme) {
-        if(validator.validar(filme)){
+        if (validator.validar(filme)) {
             return ResponseEntity.badRequest().build();
         }
 
@@ -52,7 +53,7 @@ public class FilmeController {
 
             statement.setString(1, filme.getTitulo());
             statement.setString(2, filme.getSinopse());
-            statement.setObject(3, filme.getDuracao());
+            statement.setInt(3, filme.getDuracao());
             statement.setString(4, filme.getClassificacao().name());
             statement.setString(5, filme.getGenero().name());
             statement.setDate(6, new java.sql.Date(filme.getDataLancamento().getTime()));
@@ -61,11 +62,37 @@ public class FilmeController {
             return statement;
         }, keyHolder);
 
-        Number idGerado = keyHolder.getKeyAs(Number.class);
-        filme.setId(idGerado != null ? idGerado.intValue() : null);
+        Integer idGerado = keyHolder.getKeyAs(Integer.class);
+        filme.setId(idGerado);
 
         return ResponseEntity.status(201).body(filme);
     }
 
+    @PutMapping("{id}")
+    public ResponseEntity<Filme> updateById(@PathVariable Integer id, @RequestBody Filme filme) {
+        String sql = "UPDATE filme SET " +
+                "titulo = ?, sinopse = ?, duracao = ?, classificacao = ?, genero = ?, dt_lancamento = ?, img_url = ?" +
+                "WHERE id_filme = ?";
 
+        if (validator.validar(filme)) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        if (validator.idExiste(id)) {
+            return ResponseEntity.notFound().build();
+        }
+
+        template.update(sql,
+                filme.getTitulo(),
+                filme.getSinopse(),
+                filme.getDuracao(),
+                filme.getClassificacao(),
+                filme.getGenero(),
+                filme.getDataLancamento(),
+                filme.getImagem_url(),
+                id);
+
+        filme.setId(id);
+        return ResponseEntity.ok(filme);
+    }
 }
