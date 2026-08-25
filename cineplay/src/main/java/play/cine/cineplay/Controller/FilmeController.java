@@ -36,10 +36,7 @@ public class FilmeController {
 
     @PostMapping()
     public ResponseEntity<Filme> save(@RequestBody Filme filme) {
-
-        try {
-            validator.validarPost(filme);
-        } catch (IllegalArgumentException e) {
+        if(validator.validar(filme)){
             return ResponseEntity.badRequest().build();
         }
 
@@ -69,4 +66,6 @@ public class FilmeController {
 
         return ResponseEntity.status(201).body(filme);
     }
+
+
 }

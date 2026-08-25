@@ -5,18 +5,10 @@ import play.cine.cineplay.model.Filme;
 
 @Component
 public class FilmeValidator {
-    public void validarPost(Filme filme) {
-        if (filme.getTitulo() == null || filme.getTitulo().isBlank()) {
-            throw new IllegalArgumentException("titulo é obrigatório");
-        }
-        if (filme.getClassificacao() == null) {
-            throw new IllegalArgumentException("classificacao é obrigatória");
-        }
-        if (filme.getGenero() == null) {
-            throw new IllegalArgumentException("genero é obrigatório");
-        }
-        if (filme.getDataLancamento() == null) {
-            throw new IllegalArgumentException("dataLancamento é obrigatória");
-        }
+    public Boolean validar(Filme filme) {
+        return filme.getTitulo() == null || filme.getTitulo().isBlank()
+                || filme.getClassificacao() == null
+                || filme.getGenero() == null
+                || filme.getDataLancamento() == null;
     }
 }
