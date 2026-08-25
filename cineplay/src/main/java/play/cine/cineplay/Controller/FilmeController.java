@@ -3,29 +3,70 @@ package play.cine.cineplay.Controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.web.bind.annotation.*;
 import play.cine.cineplay.model.Filme;
+import play.cine.cineplay.validations.filme.FilmeValidator;
 
+import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.util.List;
 
 @RestController
 @RequestMapping("v1/filmes")
 public class FilmeController {
     private final JdbcTemplate template;
+    private final FilmeValidator validator;
 
-    public FilmeController(JdbcTemplate template) {
+    public FilmeController(JdbcTemplate template, FilmeValidator validator) {
         this.template = template;
+        this.validator = validator;
     }
 
     @GetMapping()
-    public ResponseEntity<List<Filme>> findAll(){
+    public ResponseEntity<List<Filme>> findAll() {
         String sql = "SELECT * FROM filme";
 
         List<Filme> filmes = template.query(sql,
                 new BeanPropertyRowMapper<>(Filme.class));
 
         return ResponseEntity.ok(filmes);
+    }
+
+    @PostMapping()
+    public ResponseEntity<Filme> save(@RequestBody Filme filme) {
+
+        try {
+            validator.validarPost(filme);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        String sql = "INSERT INTO filme (titulo, sinopse, duracao, classificacao, genero, dt_lancamento, img_url) VALUES (?, ?, ?, ?, ?, ?, ?)";
+
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        template.update(connection -> {
+            PreparedStatement statement = connection.prepareStatement(
+                    sql,
+                    Statement.RETURN_GENERATED_KEYS
+            );
+
+            statement.setString(1, filme.getTitulo());
+            statement.setString(2, filme.getSinopse());
+            statement.setObject(3, filme.getDuracao());
+            statement.setString(4, filme.getClassificacao().name());
+            statement.setString(5, filme.getGenero().name());
+            statement.setDate(6, new java.sql.Date(filme.getDataLancamento().getTime()));
+            statement.setString(7, filme.getImagem_url());
+
+            return statement;
+        }, keyHolder);
+
+        Number idGerado = keyHolder.getKeyAs(Number.class);
+        filme.setId(idGerado != null ? idGerado.intValue() : null);
+
+        return ResponseEntity.status(201).body(filme);
     }
 }
