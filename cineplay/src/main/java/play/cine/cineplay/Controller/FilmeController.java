@@ -32,7 +32,7 @@ public class FilmeController {
         List<Filme> filmes = template.query(sql,
                 new BeanPropertyRowMapper<>(Filme.class));
 
-        return ResponseEntity.ok(filmes);
+        return ResponseEntity.ok().body(filmes);
     }
 
     @PostMapping()

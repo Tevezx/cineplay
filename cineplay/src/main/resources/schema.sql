@@ -25,6 +25,7 @@ CREATE TABLE IF NOT EXISTS avaliacao (
     usuario_id_usuario INT NOT NULL,
     filme_id_filme INT NOT NULL,
     nota FLOAT NOT NULL,
+    comentario VARCHAR(500) NOT NULL,
     PRIMARY KEY (usuario_id_usuario, filme_id_filme),
     INDEX fk_avaliacao_usuario_idx (usuario_id_usuario ASC),
     INDEX fk_avaliacao_filme_idx (filme_id_filme ASC),
