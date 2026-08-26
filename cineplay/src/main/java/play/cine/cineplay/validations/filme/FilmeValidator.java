@@ -14,9 +14,12 @@ public class FilmeValidator {
 
     public Boolean validar(Filme filme) {
         return filme.getTitulo() == null || filme.getTitulo().isBlank()
+                || filme.getSinopse() == null || filme.getSinopse().isBlank()
+                || filme.getDuracao() == null || filme.getDuracao() <= 0
                 || filme.getClassificacao() == null
                 || filme.getGenero() == null
-                || filme.getDataLancamento() == null;
+                || filme.getDataLancamento() == null
+                || filme.getImagem_url() == null || filme.getImagem_url().isBlank();
     }
 
     public Boolean idExiste(Integer id) {

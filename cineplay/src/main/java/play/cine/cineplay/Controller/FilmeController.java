@@ -70,10 +70,6 @@ public class FilmeController {
 
     @PutMapping("{id}")
     public ResponseEntity<Filme> updateById(@PathVariable Integer id, @RequestBody Filme filme) {
-        String sql = "UPDATE filme SET " +
-                "titulo = ?, sinopse = ?, duracao = ?, classificacao = ?, genero = ?, dt_lancamento = ?, img_url = ?" +
-                "WHERE id_filme = ?";
-
         if (validator.validar(filme)) {
             return ResponseEntity.badRequest().build();
         }
@@ -81,6 +77,10 @@ public class FilmeController {
         if (!validator.idExiste(id)) {
             return ResponseEntity.notFound().build();
         }
+
+        String sql = "UPDATE filme SET " +
+                "titulo = ?, sinopse = ?, duracao = ?, classificacao = ?, genero = ?, dt_lancamento = ?, img_url = ?" +
+                "WHERE id_filme = ?";
 
         template.update(sql,
                 filme.getTitulo(),
