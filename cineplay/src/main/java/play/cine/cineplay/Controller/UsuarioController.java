@@ -68,6 +68,10 @@ public class UsuarioController {
 
     @PutMapping("{id}")
     public ResponseEntity<Usuario> updateById(@PathVariable Integer id, @RequestBody Usuario usuario) {
+        if (!usuarioValidator.isIdExiste(id)) {
+            return ResponseEntity.notFound().build();
+        }
+
         if (usuarioValidator.isUsuarioValido(usuario)) {
             return ResponseEntity.badRequest().build();
         }
@@ -88,5 +92,19 @@ public class UsuarioController {
         );
 
         return ResponseEntity.status(200).body(usuario);
+    }
+
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<Void> deletedById(@PathVariable Integer id) {
+        if (!usuarioValidator.isIdExiste(id)) {
+            return ResponseEntity.notFound().build();
+        }
+
+        String sql = "DELETE FROM usuario WHERE id_usuario = ?";
+
+        template.update(sql, id);
+
+        return ResponseEntity.status(200).build();
     }
 }
