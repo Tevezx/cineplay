@@ -32,6 +32,10 @@ public class AvaliacaoController {
 
     @PostMapping()
     public ResponseEntity<Avaliacao> save(@RequestBody Avaliacao avaliacao) {
+        if (!avaliacaoValidator.isIdExiste(avaliacao.getId_usuario(), avaliacao.getId_filme())) {
+            return ResponseEntity.notFound().build();
+        }
+
         if (!avaliacaoValidator.isValidarAvaliacao(avaliacao)) {
             return ResponseEntity.badRequest().build();
         }
@@ -49,6 +53,14 @@ public class AvaliacaoController {
 
     @PutMapping("{idUsuario}/{idFilme}")
     public ResponseEntity<Avaliacao> updateById(@PathVariable Integer idUsuario, @PathVariable Integer idFilme, @RequestBody Avaliacao avaliacao) {
+        if (!avaliacaoValidator.isIdExiste(idUsuario, idFilme)) {
+            return ResponseEntity.notFound().build();
+        }
+
+        if (!avaliacaoValidator.isValidarAvaliacao(avaliacao)) {
+            return ResponseEntity.badRequest().build();
+        }
+
         String sql = "UPDATE avaliacao SET nota = ?, comentario = ? WHERE usuario_id_usuario = ? AND filme_id_filme = ?";
 
         template.update(sql,
@@ -61,5 +73,18 @@ public class AvaliacaoController {
         avaliacao.setId_filme(idFilme);
 
         return ResponseEntity.ok(avaliacao);
+    }
+
+    @DeleteMapping("{idUsuario}/{idFilme}")
+    public ResponseEntity<Void> deletedById(@PathVariable Integer idUsuario, @PathVariable Integer idFilme) {
+        if (!avaliacaoValidator.isIdExiste(idUsuario, idFilme)) {
+            return ResponseEntity.notFound().build();
+        }
+
+        String sql = "DELETE FROM avaliacao WHERE usuario_id_usuario = ? AND filme_id_filme = ?";
+
+        template.update(sql, idUsuario, idFilme);
+
+        return ResponseEntity.noContent().build();
     }
 }
