@@ -7,7 +7,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.web.bind.annotation.*;
 import play.cine.cineplay.model.Filme;
-import play.cine.cineplay.validations.filme.FilmeValidator;
+import play.cine.cineplay.validations.FilmeValidator;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;

@@ -1,4 +1,4 @@
-package play.cine.cineplay.validations.filme;
+package play.cine.cineplay.validations;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
