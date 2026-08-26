@@ -32,7 +32,7 @@ public class AvaliacaoController {
 
     @PostMapping()
     public ResponseEntity<Avaliacao> save(@RequestBody Avaliacao avaliacao) {
-        if(!avaliacaoValidator.isValidarAvaliacao(avaliacao)){
+        if (!avaliacaoValidator.isValidarAvaliacao(avaliacao)) {
             return ResponseEntity.badRequest().build();
         }
 
@@ -45,5 +45,21 @@ public class AvaliacaoController {
                 avaliacao.getComentario());
 
         return ResponseEntity.status(201).body(avaliacao);
+    }
+
+    @PutMapping("{idUsuario}/{idFilme}")
+    public ResponseEntity<Avaliacao> updateById(@PathVariable Integer idUsuario, @PathVariable Integer idFilme, @RequestBody Avaliacao avaliacao) {
+        String sql = "UPDATE avaliacao SET nota = ?, comentario = ? WHERE usuario_id_usuario = ? AND filme_id_filme = ?";
+
+        template.update(sql,
+                avaliacao.getNota(),
+                avaliacao.getComentario(),
+                idUsuario,
+                idFilme);
+
+        avaliacao.setId_usuario(idUsuario);
+        avaliacao.setId_filme(idFilme);
+
+        return ResponseEntity.ok(avaliacao);
     }
 }
