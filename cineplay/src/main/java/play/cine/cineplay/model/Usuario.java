@@ -2,7 +2,7 @@ package play.cine.cineplay.model;
 
 public class Usuario {
     private Integer id;
-    private Character cpf;
+    private String cpf;
     private String nome;
     private String email;
     private String senha;
@@ -10,7 +10,7 @@ public class Usuario {
     public Usuario() {
     }
 
-    public Usuario(Integer id, Character cpf, String nome, String email, String senha) {
+    public Usuario(Integer id, String cpf, String nome, String email, String senha) {
         this.id = id;
         this.cpf = cpf;
         this.nome = nome;
@@ -37,11 +37,11 @@ public class Usuario {
         this.id = id;
     }
 
-    public Character getCpf() {
+    public String getCpf() {
         return cpf;
     }
 
-    public void setCpf(Character cpf) {
+    public void setCpf(String cpf) {
         this.cpf = cpf;
     }
 
