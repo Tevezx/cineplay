@@ -1,4 +1,4 @@
-package play.cine.cineplay.validations.filme;
+package play.cine.cineplay.validations;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
@@ -12,7 +12,7 @@ public class FilmeValidator {
         this.template = template;
     }
 
-    public Boolean validar(Filme filme) {
+    public Boolean isFilmeValido(Filme filme) {
         return filme.getTitulo() == null || filme.getTitulo().isBlank()
                 || filme.getSinopse() == null || filme.getSinopse().isBlank()
                 || filme.getDuracao() == null || filme.getDuracao() <= 0
@@ -22,7 +22,7 @@ public class FilmeValidator {
                 || filme.getImagem_url() == null || filme.getImagem_url().isBlank();
     }
 
-    public Boolean idExiste(Integer id) {
+    public Boolean isIdExiste(Integer id) {
         String sql = "SELECT COUNT(*) FROM filme WHERE id_filme = ?";
 
         Integer total = template.queryForObject(sql, Integer.class, id);

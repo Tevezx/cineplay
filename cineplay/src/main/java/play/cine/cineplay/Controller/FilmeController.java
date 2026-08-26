@@ -7,7 +7,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.web.bind.annotation.*;
 import play.cine.cineplay.model.Filme;
-import play.cine.cineplay.validations.filme.FilmeValidator;
+import play.cine.cineplay.validations.FilmeValidator;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
@@ -17,11 +17,11 @@ import java.util.List;
 @RequestMapping("v1/filmes")
 public class FilmeController {
     private final JdbcTemplate template;
-    private final FilmeValidator validator;
+    private final FilmeValidator filmeValidator;
 
-    public FilmeController(JdbcTemplate template, FilmeValidator validator) {
+    public FilmeController(JdbcTemplate template, FilmeValidator filmeValidator) {
         this.template = template;
-        this.validator = validator;
+        this.filmeValidator = filmeValidator;
     }
 
     @GetMapping()
@@ -37,7 +37,7 @@ public class FilmeController {
 
     @PostMapping()
     public ResponseEntity<Filme> save(@RequestBody Filme filme) {
-        if (validator.validar(filme)) {
+        if (filmeValidator.isFilmeValido(filme)) {
             return ResponseEntity.badRequest().build();
         }
 
@@ -70,11 +70,11 @@ public class FilmeController {
 
     @PutMapping("{id}")
     public ResponseEntity<Filme> updateById(@PathVariable Integer id, @RequestBody Filme filme) {
-        if (validator.validar(filme)) {
+        if (filmeValidator.isFilmeValido(filme)) {
             return ResponseEntity.badRequest().build();
         }
 
-        if (!validator.idExiste(id)) {
+        if (!filmeValidator.isIdExiste(id)) {
             return ResponseEntity.notFound().build();
         }
 
@@ -98,7 +98,7 @@ public class FilmeController {
 
     @DeleteMapping("{id}")
     public ResponseEntity<Void> deletedById(@PathVariable Integer id) {
-        if (!validator.idExiste(id)) {
+        if (!filmeValidator.isIdExiste(id)) {
             return ResponseEntity.notFound().build();
         }
 
