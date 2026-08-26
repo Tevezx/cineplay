@@ -30,7 +30,7 @@ public class UsuarioController {
         List<Usuario> usuarios = template.query(sql,
                 new BeanPropertyRowMapper<>(Usuario.class));
 
-        return ResponseEntity.ok(usuarios);
+        return ResponseEntity.status(201).body(usuarios);
     }
 
     @PostMapping()
