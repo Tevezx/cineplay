@@ -37,7 +37,7 @@ public class FilmeController {
 
     @PostMapping()
     public ResponseEntity<Filme> save(@RequestBody Filme filme) {
-        if (validator.validar(filme)) {
+        if (validator.isFilmeValido(filme)) {
             return ResponseEntity.badRequest().build();
         }
 
@@ -70,11 +70,11 @@ public class FilmeController {
 
     @PutMapping("{id}")
     public ResponseEntity<Filme> updateById(@PathVariable Integer id, @RequestBody Filme filme) {
-        if (validator.validar(filme)) {
+        if (validator.isFilmeValido(filme)) {
             return ResponseEntity.badRequest().build();
         }
 
-        if (!validator.idExiste(id)) {
+        if (!validator.isIdExiste(id)) {
             return ResponseEntity.notFound().build();
         }
 
@@ -98,7 +98,7 @@ public class FilmeController {
 
     @DeleteMapping("{id}")
     public ResponseEntity<Void> deletedById(@PathVariable Integer id) {
-        if (!validator.idExiste(id)) {
+        if (!validator.isIdExiste(id)) {
             return ResponseEntity.notFound().build();
         }
 
