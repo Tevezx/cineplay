@@ -62,8 +62,8 @@ public class FilmeController {
             return statement;
         }, keyHolder);
 
-        Integer idGerado = keyHolder.getKeyAs(Integer.class);
-        filme.setId(idGerado);
+        Number idGerado = keyHolder.getKey();
+        filme.setId(idGerado != null ? idGerado.intValue() : null);
 
         return ResponseEntity.status(201).body(filme);
     }
@@ -78,7 +78,7 @@ public class FilmeController {
             return ResponseEntity.badRequest().build();
         }
 
-        if (validator.idExiste(id)) {
+        if (!validator.idExiste(id)) {
             return ResponseEntity.notFound().build();
         }
 
@@ -86,13 +86,26 @@ public class FilmeController {
                 filme.getTitulo(),
                 filme.getSinopse(),
                 filme.getDuracao(),
-                filme.getClassificacao(),
-                filme.getGenero(),
-                filme.getDataLancamento(),
+                filme.getClassificacao().name(),
+                filme.getGenero().name(),
+                new java.sql.Date(filme.getDataLancamento().getTime()),
                 filme.getImagem_url(),
                 id);
 
         filme.setId(id);
         return ResponseEntity.ok(filme);
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<Void> deletedById(@PathVariable Integer id) {
+        if (!validator.idExiste(id)) {
+            return ResponseEntity.notFound().build();
+        }
+
+        String sql = "DELETE FROM filme WHERE id_filme = ?";
+
+        template.update(sql, id);
+
+        return ResponseEntity.noContent().build();
     }
 }
