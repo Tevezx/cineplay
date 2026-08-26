@@ -25,7 +25,7 @@ public class UsuarioController {
 
     @GetMapping()
     public ResponseEntity<List<Usuario>> findAll() {
-        String sql = "SELECT * FROM usuario";
+        String sql = "SELECT id_usuario AS id, cpf, nome, email, senha FROM usuario";
 
         List<Usuario> usuarios = template.query(sql,
                 new BeanPropertyRowMapper<>(Usuario.class));
@@ -60,9 +60,33 @@ public class UsuarioController {
             return statement;
         }, keyHolder);
 
-        Integer idGerado = keyHolder.getKeyAs(Integer.class);
-        usuario.setId(idGerado);
+        Number idGerado = keyHolder.getKey();
+        usuario.setId(idGerado != null ? idGerado.intValue() : null);
 
         return ResponseEntity.status(201).body(usuario);
+    }
+
+    @PutMapping("{id}")
+    public ResponseEntity<Usuario> updateById(@PathVariable Integer id, @RequestBody Usuario usuario) {
+        if (usuarioValidator.isUsuarioValido(usuario)) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        if (!usuarioValidator.isEmailValido(usuario.getEmail())) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        String sql = "UPDATE usuario SET cpf = ?, nome = ?, email = ?, senha = ? WHERE id_usuario = ?";
+
+
+        template.update(sql,
+                usuario.getCpf(),
+                usuario.getNome(),
+                usuario.getEmail(),
+                usuario.getSenha(),
+                id
+        );
+
+        return ResponseEntity.status(200).body(usuario);
     }
 }
