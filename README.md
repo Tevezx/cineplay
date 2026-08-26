@@ -1,42 +1,104 @@
-# 🎬 Sistema de Reserva de Assentos para Cinema
+# 🎬 CinePlay
 
-Sistema para gerenciamento de cinema com controle de acesso por perfil de usuário (**Administrador** e **Cliente**), permitindo o cadastro de filmes, salas e sessões, além da reserva de assentos pelos clientes.
+Sistema web para gerenciamento e avaliação de filmes. Administradores podem cadastrar filmes na plataforma, enquanto usuários podem se cadastrar, avaliar filmes com nota e deixar comentários.
 
-## 📋 Sobre o Projeto
+## 📋 Sobre o projeto
 
-O sistema permite que administradores gerenciem o conteúdo do cinema (filmes, salas com seus assentos e sessões), enquanto clientes podem se cadastrar, visualizar as sessões disponíveis e reservar assentos específicos, evitando conflitos de reservas duplicadas.
+O CinePlay permite que:
 
-## ✨ Funcionalidades
+- **Administradores** cadastrem, editem e removam filmes do catálogo (título, sinopse, gênero, ano, elenco, pôster, etc.);
+- **Usuários** criem uma conta, façam login e avaliem os filmes com **nota** (ex: de 0 a 5 ou 0 a 10) e **comentário**;
+- Todos os usuários visualizem o catálogo de filmes, suas avaliações e a nota média calculada a partir das avaliações da comunidade.
 
-### 🔑 Autenticação
-- Cadastro de usuário
-- Login com diferenciação de perfil (Admin / Cliente)
+## 🚀 Tecnologias utilizadas
 
-### 👨‍💼 Administrador
-- Cadastrar, editar e remover filmes
-- Cadastrar salas e definir seus assentos
-- Cadastrar sessões (filme + sala + data/horário)
-- Visualizar reservas realizadas
+**Back-end**
+- Java
+- Spring Boot
+- Spring JDBC
 
-### 🎟️ Cliente
-- Visualizar filmes e sessões disponíveis
-- Selecionar sessão e reservar assento(s) disponíveis
-- Visualizar e cancelar suas próprias reservas
+**Front-end**
+- React
 
-## 🛠️ Tecnologias Utilizadas
+**Banco de dados**
+- MySQL
 
-- **Java** – linguagem principal do sistema
-- **JDBC** – conexão e manipulação do banco de dados
-- **SQL** – modelagem e consultas ao banco de dados
-- **React** – sistema visual
-- **Docker** – imagem de tecnologias e build
+**Infraestrutura**
+- Docker / Docker Compose
 
-## ⚙️ Pré-requisitos
+## 🗂️ Estrutura do projeto
 
-- Java JDK21+
-- Banco de dados relacional (MySQL)
-- Driver JDBC correspondente ao banco utilizado
+```
+cineplay/
+├── backend/          # API REST em Java + Spring Boot
+├── frontend/          # Aplicação React
+├── docker-compose.yml
+└── README.md
+```
 
-## 📄 Licença
+## ⚙️ Funcionalidades
 
-Este projeto é de uso acadêmico/pessoal.
+### Administrador
+- [ ] Login como administrador
+- [ ] Cadastrar novo filme
+- [ ] Editar informações de um filme
+- [ ] Remover filme do catálogo
+- [ ] Listar todos os filmes cadastrados
+
+### Usuário
+- [ ] Cadastro de novo usuário
+- [ ] Login de usuário
+- [ ] Listar/buscar filmes disponíveis
+- [ ] Visualizar detalhes de um filme
+- [ ] Avaliar um filme (nota + comentário)
+- [ ] Editar/excluir sua própria avaliação
+- [ ] Visualizar nota média e comentários de outros usuários
+
+## 🐳 Como executar o projeto com Docker
+
+### Pré-requisitos
+- [Docker](https://www.docker.com/) e [Docker Compose](https://docs.docker.com/compose/) instalados
+
+### Passo a passo
+
+1. Clone o repositório:
+```bash
+git clone https://github.com/Tevezx/cineplay.git
+cd cineplay
+```
+
+2. Configure as variáveis de ambiente (crie um arquivo `.env` na raiz, se necessário):
+```env
+MYSQL_DATABASE=cineplay
+MYSQL_ROOT_PASSWORD=sua_senha
+MYSQL_USER=cine_user
+MYSQL_PASSWORD=sua_senha
+```
+
+3. Suba os containers:
+```bash
+docker-compose up -d --build
+```
+
+4. Acesse a aplicação:
+- Front-end: `http://localhost:5173`
+- Back-end (API): `http://localhost:8080`
+- MySQL: `localhost:3306`
+
+> Certifique-se de que o MySQL esteja rodando localmente e configurado no `application.properties`/`application.yml` do back-end.
+
+> Ajuste esta tabela conforme os endpoints reais implementados no seu projeto.
+
+## 🗃️ Modelo de dados (resumo)
+
+- **Usuário**: id, cpf, nome, email, senha, role (`ADMIN` / `USER`)
+- **Filme**: id, título, sinopse, duracao, classificacao, genero, dt_lancamento, img_url
+- **Avaliação**: id, nota, comentário, usuário (FK), filme (FK), data
+
+## 🤝 Contribuindo
+
+1. Faça um fork do projeto
+2. Crie uma branch para sua feature (`git checkout -b feature/nova-funcionalidade`)
+3. Commit suas alterações (`git commit -m 'Adiciona nova funcionalidade'`)
+4. Faça o push para a branch (`git push origin feature/nova-funcionalidade`)
+5. Abra um Pull Request
