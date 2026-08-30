@@ -37,7 +37,7 @@ public class FilmeController {
 
     @PostMapping()
     public ResponseEntity<Filme> save(@RequestBody Filme filme) {
-        if (filmeValidator.isFilmeValido(filme)) {
+        if (filmeValidator.isFilmeValido(filme) && filmeValidator.isIdExiste(filme.getId())) {
             return ResponseEntity.badRequest().build();
         }
 

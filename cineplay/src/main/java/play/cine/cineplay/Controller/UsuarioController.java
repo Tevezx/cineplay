@@ -43,6 +43,8 @@ public class UsuarioController {
             return ResponseEntity.badRequest().build();
         }
 
+        usuarioValidator.isEmailExiste(usuario.getEmail());
+
         String sql = "INSERT INTO usuario (cpf, nome, email, senha) VALUES (?, ?, ?, ?)";
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
