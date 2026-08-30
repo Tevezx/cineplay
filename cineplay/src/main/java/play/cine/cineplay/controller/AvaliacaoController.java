@@ -1,4 +1,4 @@
-package play.cine.cineplay.Controller;
+package play.cine.cineplay.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;

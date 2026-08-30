@@ -1,4 +1,4 @@
-package play.cine.cineplay.Controller;
+package play.cine.cineplay.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -25,12 +25,7 @@ public class UsuarioController {
 
     @GetMapping()
     public ResponseEntity<List<Usuario>> findAll() {
-        String sql = "SELECT id_usuario AS id, cpf, nome, email, senha FROM usuario";
 
-        List<Usuario> usuarios = template.query(sql,
-                new BeanPropertyRowMapper<>(Usuario.class));
-
-        return ResponseEntity.ok().body(usuarios);
     }
 
     @PostMapping()
@@ -44,26 +39,6 @@ public class UsuarioController {
         }
 
         usuarioValidator.isEmailExiste(usuario.getEmail());
-
-        String sql = "INSERT INTO usuario (cpf, nome, email, senha) VALUES (?, ?, ?, ?)";
-
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-
-        template.update(connection -> {
-            PreparedStatement statement = connection.prepareStatement(
-                    sql,
-                    PreparedStatement.RETURN_GENERATED_KEYS);
-
-            statement.setString(1, usuario.getCpf());
-            statement.setString(2, usuario.getNome());
-            statement.setString(3, usuario.getEmail());
-            statement.setString(4, usuario.getSenha());
-
-            return statement;
-        }, keyHolder);
-
-        Number idGerado = keyHolder.getKey();
-        usuario.setId(idGerado != null ? idGerado.intValue() : null);
 
         return ResponseEntity.status(201).body(usuario);
     }
@@ -82,16 +57,7 @@ public class UsuarioController {
             return ResponseEntity.badRequest().build();
         }
 
-        String sql = "UPDATE usuario SET cpf = ?, nome = ?, email = ?, senha = ? WHERE id_usuario = ?";
 
-
-        template.update(sql,
-                usuario.getCpf(),
-                usuario.getNome(),
-                usuario.getEmail(),
-                usuario.getSenha(),
-                id
-        );
 
         return ResponseEntity.status(200).body(usuario);
     }
@@ -102,10 +68,6 @@ public class UsuarioController {
         if (!usuarioValidator.isIdExiste(id)) {
             return ResponseEntity.notFound().build();
         }
-
-        String sql = "DELETE FROM usuario WHERE id_usuario = ?";
-
-        template.update(sql, id);
 
         return ResponseEntity.status(200).build();
     }

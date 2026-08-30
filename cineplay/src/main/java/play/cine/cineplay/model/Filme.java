@@ -1,7 +1,7 @@
 package play.cine.cineplay.model;
 
-import play.cine.cineplay.enums.Classificacao;
-import play.cine.cineplay.enums.Genero;
+import play.cine.cineplay.model.enums.Classificacao;
+import play.cine.cineplay.model.enums.Genero;
 
 import java.util.Date;
 import java.util.Objects;
