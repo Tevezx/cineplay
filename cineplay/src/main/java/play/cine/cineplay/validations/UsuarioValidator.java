@@ -4,8 +4,10 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import play.cine.cineplay.model.Usuario;
+import play.cine.exception.EmailAlreadyExistsException;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -48,5 +50,20 @@ public class UsuarioValidator {
 
         Matcher matcher = PATTERN.matcher(email);
         return matcher.matches();
+    }
+
+    public void isEmailExiste(String email) {
+        String sql = "SELECT id_usuario AS id, cpf, nome, email, senha FROM usuario";
+
+        List<Usuario> usuarios = template.query(sql,
+                new BeanPropertyRowMapper<>(Usuario.class));
+
+        Optional<Usuario> usuarioEncontrado = usuarios.stream()
+                .filter(usuario -> usuario.getEmail().equalsIgnoreCase(email))
+                .findFirst();
+
+        if (usuarioEncontrado.isPresent()) {
+            throw new EmailAlreadyExistsException("Email já cadastrado: " + email);
+        }
     }
 }
