@@ -21,6 +21,13 @@ public class GlobalErrorHandlerAdvice {
         return ResponseEntity.status(400).body(error);
     }
 
+    @ExceptionHandler(AvaliacaoAlreadyExistsException.class)
+    public ResponseEntity<DefaultErrorMessage> handleAvaliacaoAlreadyExistsException(AvaliacaoAlreadyExistsException e) {
+        var error = new DefaultErrorMessage(HttpStatus.BAD_REQUEST.value(), e.getReason());
+
+        return ResponseEntity.status(400).body(error);
+    }
+
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<DefaultErrorMessage> handleIllegalArgumentException(IllegalArgumentException e) {
         var error = new DefaultErrorMessage(HttpStatus.BAD_REQUEST.value(), e.getMessage());

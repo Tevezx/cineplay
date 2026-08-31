@@ -3,6 +3,7 @@ package play.cine.cineplay.validations;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import play.cine.cineplay.model.Filme;
+import play.cine.exception.NotFoundException;
 
 @Component
 public class FilmeValidator {
@@ -12,21 +13,25 @@ public class FilmeValidator {
         this.template = template;
     }
 
-    public Boolean isFilmeValido(Filme filme) {
-        return filme.getTitulo() == null || filme.getTitulo().isBlank()
+    public void isFilmeValido(Filme filme) {
+        if (filme.getTitulo() == null || filme.getTitulo().isBlank()
                 || filme.getSinopse() == null || filme.getSinopse().isBlank()
                 || filme.getDuracao() == null || filme.getDuracao() <= 0
                 || filme.getClassificacao() == null
                 || filme.getGenero() == null
                 || filme.getDataLancamento() == null
-                || filme.getImagem_url() == null || filme.getImagem_url().isBlank();
+                || filme.getImagem_url() == null || filme.getImagem_url().isBlank()) {
+            throw new IllegalArgumentException("Dados do filme inválidos");
+        }
     }
 
-    public Boolean isIdExiste(Integer id) {
+    public void isIdExiste(Integer id) {
         String sql = "SELECT COUNT(*) FROM filme WHERE id_filme = ?";
 
         Integer total = template.queryForObject(sql, Integer.class, id);
 
-        return total != null && total > 0;
+        if (total == null || total == 0) {
+            throw new NotFoundException("Filme com id " + id + " não encontrado");
+        }
     }
 }
