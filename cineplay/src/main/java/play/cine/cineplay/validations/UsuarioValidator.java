@@ -4,6 +4,8 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import play.cine.cineplay.model.Usuario;
+import play.cine.cineplay.request.UsuarioRequestDto;
+import play.cine.cineplay.response.UsuarioResponseDto;
 import play.cine.exception.EmailAlreadyExistsException;
 
 import java.util.List;

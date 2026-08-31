@@ -7,6 +7,8 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.web.bind.annotation.*;
 import play.cine.cineplay.model.Usuario;
+import play.cine.cineplay.request.UsuarioRequestDto;
+import play.cine.cineplay.response.UsuarioResponseDto;
 import play.cine.cineplay.validations.UsuarioValidator;
 
 import java.sql.PreparedStatement;
@@ -24,17 +26,23 @@ public class UsuarioController {
     }
 
     @GetMapping()
-    public ResponseEntity<List<Usuario>> findAll() {
+    public ResponseEntity<List<UsuarioResponseDto>> findAll() {
         String sql = "SELECT id_usuario AS id, cpf, nome, email, senha FROM usuario";
 
         List<Usuario> usuarios = template.query(sql,
                 new BeanPropertyRowMapper<>(Usuario.class));
 
-        return ResponseEntity.ok().body(usuarios);
+        List<UsuarioResponseDto> response = usuarios.stream()
+                .map(UsuarioResponseDto::fromEntity)
+                .toList();
+
+        return ResponseEntity.ok().body(response);
     }
 
     @PostMapping()
-    public ResponseEntity<Usuario> save(@RequestBody Usuario usuario) {
+    public ResponseEntity<UsuarioResponseDto> save(@RequestBody UsuarioRequestDto usuarioRequestDto) {
+        Usuario usuario = usuarioRequestDto.toEntity();
+
         if (usuarioValidator.isUsuarioValido(usuario)) {
             return ResponseEntity.badRequest().build();
         }
@@ -65,14 +73,17 @@ public class UsuarioController {
         Number idGerado = keyHolder.getKey();
         usuario.setId(idGerado != null ? idGerado.intValue() : null);
 
-        return ResponseEntity.status(201).body(usuario);
+        return ResponseEntity.status(201).body(UsuarioResponseDto.fromEntity(usuario));
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<Usuario> updateById(@PathVariable Integer id, @RequestBody Usuario usuario) {
+    public ResponseEntity<UsuarioResponseDto> updateById(@PathVariable Integer id, @RequestBody UsuarioRequestDto usuarioRequestDto) {
         if (!usuarioValidator.isIdExiste(id)) {
             return ResponseEntity.notFound().build();
         }
+
+        Usuario usuario = usuarioRequestDto.toEntity();
+        usuario.setId(id);
 
         if (usuarioValidator.isUsuarioValido(usuario)) {
             return ResponseEntity.badRequest().build();
@@ -84,7 +95,6 @@ public class UsuarioController {
 
         String sql = "UPDATE usuario SET cpf = ?, nome = ?, email = ?, senha = ? WHERE id_usuario = ?";
 
-
         template.update(sql,
                 usuario.getCpf(),
                 usuario.getNome(),
@@ -93,7 +103,7 @@ public class UsuarioController {
                 id
         );
 
-        return ResponseEntity.status(200).body(usuario);
+        return ResponseEntity.status(200).body(UsuarioResponseDto.fromEntity(usuario));
     }
 
 
