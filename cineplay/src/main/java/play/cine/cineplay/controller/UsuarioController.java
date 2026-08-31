@@ -1,74 +1,43 @@
 package play.cine.cineplay.controller;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.web.bind.annotation.*;
 import play.cine.cineplay.model.Usuario;
-import play.cine.cineplay.validations.UsuarioValidator;
+import play.cine.cineplay.service.UsuarioService;
 
-import java.sql.PreparedStatement;
 import java.util.List;
 
 @RestController
 @RequestMapping("v1/usuarios")
 public class UsuarioController {
-    private final JdbcTemplate template;
-    private final UsuarioValidator usuarioValidator;
+    private final UsuarioService service;
 
-    public UsuarioController(JdbcTemplate template, UsuarioValidator usuarioValidator) {
-        this.template = template;
-        this.usuarioValidator = usuarioValidator;
+    public UsuarioController(UsuarioService service) {
+        this.service = service;
     }
 
     @GetMapping()
     public ResponseEntity<List<Usuario>> findAll() {
-
+        var usuarios = service.findAll();
+        return ResponseEntity.ok(usuarios);
     }
 
     @PostMapping()
     public ResponseEntity<Usuario> save(@RequestBody Usuario usuario) {
-        if (usuarioValidator.isUsuarioValido(usuario)) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        if (!usuarioValidator.isEmailValido(usuario.getEmail())) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        usuarioValidator.isEmailExiste(usuario.getEmail());
-
-        return ResponseEntity.status(201).body(usuario);
+        var usuarioSalvo = service.save(usuario);
+        return ResponseEntity.status(201).body(usuarioSalvo);
     }
 
     @PutMapping("{id}")
     public ResponseEntity<Usuario> updateById(@PathVariable Integer id, @RequestBody Usuario usuario) {
-        if (!usuarioValidator.isIdExiste(id)) {
-            return ResponseEntity.notFound().build();
-        }
-
-        if (usuarioValidator.isUsuarioValido(usuario)) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        if (!usuarioValidator.isEmailValido(usuario.getEmail())) {
-            return ResponseEntity.badRequest().build();
-        }
-
-
-
-        return ResponseEntity.status(200).body(usuario);
+        var usuarioUpdated = service.updateById(id, usuario);
+        return ResponseEntity.status(200).body(usuarioUpdated);
     }
 
 
     @DeleteMapping("{id}")
     public ResponseEntity<Void> deletedById(@PathVariable Integer id) {
-        if (!usuarioValidator.isIdExiste(id)) {
-            return ResponseEntity.notFound().build();
-        }
-
-        return ResponseEntity.status(200).build();
+        service.deletedById(id);
+        return ResponseEntity.noContent().build();
     }
 }
