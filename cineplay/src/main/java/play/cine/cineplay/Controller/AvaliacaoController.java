@@ -5,6 +5,8 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.*;
 import play.cine.cineplay.model.Avaliacao;
+import play.cine.cineplay.request.AvaliacaoRequestDto;
+import play.cine.cineplay.response.AvaliacaoResponseDto;
 import play.cine.cineplay.validations.AvaliacaoValidator;
 
 import java.util.List;
@@ -21,17 +23,23 @@ public class AvaliacaoController {
     }
 
     @GetMapping()
-    public ResponseEntity<List<Avaliacao>> findAll() {
+    public ResponseEntity<List<AvaliacaoResponseDto>> findAll() {
         String sql = "SELECT usuario_id_usuario AS id_usuario, filme_id_filme AS id_filme, nota, comentario FROM avaliacao";
 
         List<Avaliacao> avaliacoes = template.query(sql,
                 new BeanPropertyRowMapper<>(Avaliacao.class));
 
-        return ResponseEntity.ok(avaliacoes);
+        List<AvaliacaoResponseDto> response = avaliacoes.stream()
+                .map(AvaliacaoResponseDto::fromEntity)
+                .toList();
+
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping()
-    public ResponseEntity<Avaliacao> save(@RequestBody Avaliacao avaliacao) {
+    public ResponseEntity<AvaliacaoResponseDto> save(@RequestBody AvaliacaoRequestDto avaliacaoRequestDto) {
+        Avaliacao avaliacao = avaliacaoRequestDto.toEntity();
+
         if (!avaliacaoValidator.isIdExiste(avaliacao.getId_usuario(), avaliacao.getId_filme())) {
             return ResponseEntity.notFound().build();
         }
@@ -48,14 +56,16 @@ public class AvaliacaoController {
                 avaliacao.getNota(),
                 avaliacao.getComentario());
 
-        return ResponseEntity.status(201).body(avaliacao);
+        return ResponseEntity.status(201).body(AvaliacaoResponseDto.fromEntity(avaliacao));
     }
 
     @PutMapping("{idUsuario}/{idFilme}")
-    public ResponseEntity<Avaliacao> updateById(@PathVariable Integer idUsuario, @PathVariable Integer idFilme, @RequestBody Avaliacao avaliacao) {
+    public ResponseEntity<Avaliacao> updateById(@PathVariable Integer idUsuario, @PathVariable Integer idFilme, @RequestBody AvaliacaoRequestDto avaliacaoRequestDto) {
         if (!avaliacaoValidator.isIdExiste(idUsuario, idFilme)) {
             return ResponseEntity.notFound().build();
         }
+
+        Avaliacao avaliacao = avaliacaoRequestDto.toEntity();
 
         if (!avaliacaoValidator.isValidarAvaliacao(avaliacao)) {
             return ResponseEntity.badRequest().build();
