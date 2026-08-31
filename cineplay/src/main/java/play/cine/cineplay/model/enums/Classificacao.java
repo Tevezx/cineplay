@@ -1,4 +1,4 @@
-package play.cine.cineplay.enums;
+package play.cine.cineplay.model.enums;
 
 public enum Classificacao {
     L10(10),

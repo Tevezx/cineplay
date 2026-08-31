@@ -1,46 +1,32 @@
-package play.cine.cineplay.Controller;
+package play.cine.cineplay.repository;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.stereotype.Repository;
 import play.cine.cineplay.model.Filme;
-import play.cine.cineplay.validations.FilmeValidator;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
 
-@RestController
-@RequestMapping("v1/filmes")
-public class FilmeController {
+@Repository
+public class FilmeRepository {
     private final JdbcTemplate template;
-    private final FilmeValidator filmeValidator;
 
-    public FilmeController(JdbcTemplate template, FilmeValidator filmeValidator) {
+    public FilmeRepository(JdbcTemplate template) {
         this.template = template;
-        this.filmeValidator = filmeValidator;
     }
 
-    @GetMapping()
-    public ResponseEntity<List<Filme>> findAll() {
+    public List<Filme> findAll() {
         String sql = "SELECT id_filme AS id, titulo, sinopse, duracao, classificacao, genero, " +
                 "dt_lancamento AS dataLancamento, img_url AS imagem_url FROM filme";
 
-        List<Filme> filmes = template.query(sql,
-                new BeanPropertyRowMapper<>(Filme.class));
-
-        return ResponseEntity.ok().body(filmes);
+        return template.query(sql, new BeanPropertyRowMapper<>(Filme.class));
     }
 
-    @PostMapping()
-    public ResponseEntity<Filme> save(@RequestBody Filme filme) {
-        if (filmeValidator.isFilmeValido(filme) && filmeValidator.isIdExiste(filme.getId())) {
-            return ResponseEntity.badRequest().build();
-        }
-
+    public Filme save(Filme filme) {
         String sql = "INSERT INTO filme (titulo, sinopse, duracao, classificacao, genero, dt_lancamento, img_url) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -65,21 +51,12 @@ public class FilmeController {
         Number idGerado = keyHolder.getKey();
         filme.setId(idGerado != null ? idGerado.intValue() : null);
 
-        return ResponseEntity.status(201).body(filme);
+        return filme;
     }
 
-    @PutMapping("{id}")
-    public ResponseEntity<Filme> updateById(@PathVariable Integer id, @RequestBody Filme filme) {
-        if (filmeValidator.isFilmeValido(filme)) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        if (!filmeValidator.isIdExiste(id)) {
-            return ResponseEntity.notFound().build();
-        }
-
+    public Filme updateById(Integer id, Filme filme) {
         String sql = "UPDATE filme SET " +
-                "titulo = ?, sinopse = ?, duracao = ?, classificacao = ?, genero = ?, dt_lancamento = ?, img_url = ?" +
+                "titulo = ?, sinopse = ?, duracao = ?, classificacao = ?, genero = ?, dt_lancamento = ?, img_url = ? " +
                 "WHERE id_filme = ?";
 
         template.update(sql,
@@ -93,19 +70,12 @@ public class FilmeController {
                 id);
 
         filme.setId(id);
-        return ResponseEntity.ok(filme);
+        return filme;
     }
 
-    @DeleteMapping("{id}")
-    public ResponseEntity<Void> deletedById(@PathVariable Integer id) {
-        if (!filmeValidator.isIdExiste(id)) {
-            return ResponseEntity.notFound().build();
-        }
-
+    public void deletedById(Integer id) {
         String sql = "DELETE FROM filme WHERE id_filme = ?";
 
         template.update(sql, id);
-
-        return ResponseEntity.noContent().build();
     }
 }
