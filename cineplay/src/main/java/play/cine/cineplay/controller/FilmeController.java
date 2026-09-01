@@ -2,7 +2,8 @@ package play.cine.cineplay.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import play.cine.cineplay.model.Filme;
+import play.cine.cineplay.request.FilmeRequestDto;
+import play.cine.cineplay.response.FilmeResponseDto;
 import play.cine.cineplay.service.FilmeService;
 
 import java.util.List;
@@ -17,21 +18,23 @@ public class FilmeController {
     }
 
     @GetMapping()
-    public ResponseEntity<List<Filme>> findAll() {
-        var filmes = service.findAll();
+    public ResponseEntity<List<FilmeResponseDto>> findAll() {
+        var filmes = service.findAll().stream()
+                .map(FilmeResponseDto::fromEntity)
+                .toList();
         return ResponseEntity.ok(filmes);
     }
 
     @PostMapping()
-    public ResponseEntity<Filme> save(@RequestBody Filme filme) {
-        var filmeSalvo = service.save(filme);
-        return ResponseEntity.status(201).body(filmeSalvo);
+    public ResponseEntity<FilmeResponseDto> save(@RequestBody FilmeRequestDto filmeRequestDto) {
+        var filmeSalvo = service.save(filmeRequestDto.toEntity());
+        return ResponseEntity.status(201).body(FilmeResponseDto.fromEntity(filmeSalvo));
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<Filme> updateById(@PathVariable Integer id, @RequestBody Filme filme) {
-        var filmeAtualizado = service.updateById(id, filme);
-        return ResponseEntity.ok(filmeAtualizado);
+    public ResponseEntity<FilmeResponseDto> updateById(@PathVariable Integer id, @RequestBody FilmeRequestDto filmeRequestDto) {
+        var filmeAtualizado = service.updateById(id, filmeRequestDto.toEntity());
+        return ResponseEntity.ok(FilmeResponseDto.fromEntity(filmeAtualizado));
     }
 
     @DeleteMapping("{id}")

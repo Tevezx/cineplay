@@ -2,7 +2,8 @@ package play.cine.cineplay.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import play.cine.cineplay.model.Avaliacao;
+import play.cine.cineplay.request.AvaliacaoRequestDto;
+import play.cine.cineplay.response.AvaliacaoResponseDto;
 import play.cine.cineplay.service.AvaliacaoService;
 
 import java.util.List;
@@ -17,21 +18,28 @@ public class AvaliacaoController {
     }
 
     @GetMapping()
-    public ResponseEntity<List<Avaliacao>> findAll() {
-        var avaliacoes = service.findAll();
+    public ResponseEntity<List<AvaliacaoResponseDto>> findAll() {
+        var avaliacoes = service.findAll().stream()
+                .map(AvaliacaoResponseDto::fromEntity)
+                .toList();
         return ResponseEntity.ok(avaliacoes);
     }
 
     @PostMapping()
-    public ResponseEntity<Avaliacao> save(@RequestBody Avaliacao avaliacao) {
-        var avaliacaoSalva = service.save(avaliacao);
-        return ResponseEntity.status(201).body(avaliacaoSalva);
+    public ResponseEntity<AvaliacaoResponseDto> save(@RequestBody AvaliacaoRequestDto avaliacaoRequestDto) {
+        var avaliacaoSalva = service.save(avaliacaoRequestDto.toEntity());
+        return ResponseEntity.status(201).body(AvaliacaoResponseDto.fromEntity(avaliacaoSalva));
     }
 
     @PutMapping("{idUsuario}/{idFilme}")
-    public ResponseEntity<Avaliacao> updateById(@PathVariable Integer idUsuario, @PathVariable Integer idFilme, @RequestBody Avaliacao avaliacao) {
+    public ResponseEntity<AvaliacaoResponseDto> updateById(@PathVariable Integer idUsuario, @PathVariable Integer idFilme, @RequestBody AvaliacaoRequestDto avaliacaoRequestDto) {
+        if (!idUsuario.equals(avaliacaoRequestDto.id_usuario()) || !idFilme.equals(avaliacaoRequestDto.id_filme())) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        var avaliacao = avaliacaoRequestDto.toEntity();
         var avaliacaoAtualizada = service.updateById(idUsuario, idFilme, avaliacao);
-        return ResponseEntity.ok(avaliacaoAtualizada);
+        return ResponseEntity.ok(AvaliacaoResponseDto.fromEntity(avaliacaoAtualizada));
     }
 
     @DeleteMapping("{idUsuario}/{idFilme}")

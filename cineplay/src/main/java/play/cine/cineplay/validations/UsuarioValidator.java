@@ -1,15 +1,11 @@
 package play.cine.cineplay.validations;
 
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import play.cine.cineplay.model.Usuario;
 import play.cine.exception.EmailAlreadyExistsException;
 import play.cine.exception.NotFoundException;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Component
@@ -27,7 +23,7 @@ public class UsuarioValidator {
     }
 
     public void isUsuarioValido(Usuario usuario) {
-        if (usuario.getCpf() == null || usuario.getCpf().isBlank() || usuario.getCpf().length() != 11
+        if (usuario.getCpf() == null || usuario.getCpf().isBlank()
                 || usuario.getNome() == null || usuario.getNome().isBlank()
                 || usuario.getEmail() == null || usuario.getEmail().isBlank()
                 || usuario.getSenha() == null || usuario.getSenha().isBlank() || usuario.getSenha().length() <= 6) {
@@ -36,15 +32,10 @@ public class UsuarioValidator {
     }
 
     public void isIdExiste(Integer id) {
-        String sql = "SELECT id_usuario AS id, cpf, nome, email, senha FROM usuario";
+        String sql = "SELECT COUNT(*) FROM usuario WHERE id_usuario = ?";
+        Integer total = template.queryForObject(sql, Integer.class, id);
 
-        List<Usuario> usuarios = template.query(sql,
-                new BeanPropertyRowMapper<>(Usuario.class));
-
-        boolean existe = usuarios.stream()
-                .anyMatch(usuario -> usuario.getId().equals(id));
-
-        if (!existe) {
+        if (total == null || total == 0) {
             throw new NotFoundException("Usuário com id " + id + " não encontrado");
         }
     }
@@ -56,16 +47,19 @@ public class UsuarioValidator {
     }
 
     public void isEmailExiste(String email) {
-        String sql = "SELECT id_usuario AS id, cpf, nome, email, senha FROM usuario";
+        String sql = "SELECT COUNT(*) FROM usuario WHERE LOWER(email) = LOWER(?)";
+        Integer total = template.queryForObject(sql, Integer.class, email);
 
-        List<Usuario> usuarios = template.query(sql,
-                new BeanPropertyRowMapper<>(Usuario.class));
+        if (total != null && total > 0) {
+            throw new EmailAlreadyExistsException("Email já cadastrado: " + email);
+        }
+    }
 
-        Optional<Usuario> usuarioEncontrado = usuarios.stream()
-                .filter(usuario -> usuario.getEmail().equalsIgnoreCase(email))
-                .findFirst();
+    public void isEmailExiste(Integer id, String email) {
+        String sql = "SELECT COUNT(*) FROM usuario WHERE LOWER(email) = LOWER(?) AND id_usuario <> ?";
+        Integer total = template.queryForObject(sql, Integer.class, email, id);
 
-        if (usuarioEncontrado.isPresent()) {
+        if (total != null && total > 0) {
             throw new EmailAlreadyExistsException("Email já cadastrado: " + email);
         }
     }
