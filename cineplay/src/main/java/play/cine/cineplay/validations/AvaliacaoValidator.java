@@ -1,39 +1,37 @@
 package play.cine.cineplay.validations;
 
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import play.cine.cineplay.model.Avaliacao;
-
-import java.util.List;
+import play.cine.cineplay.repository.AvaliacaoRepository;
+import play.cine.exception.AvaliacaoAlreadyExistsException;
+import play.cine.exception.NotFoundException;
 
 @Component
 public class AvaliacaoValidator {
-    private final JdbcTemplate template;
+    private final AvaliacaoRepository repository;
 
-    public AvaliacaoValidator(JdbcTemplate template) {
-        this.template = template;
+    public AvaliacaoValidator(AvaliacaoRepository repository) {
+        this.repository = repository;
     }
 
-    public Boolean isValidarAvaliacao(Avaliacao avaliacao) {
-        return avaliacao.getId_usuario() == null
+    public void isAvaliacaoValida(Avaliacao avaliacao) {
+        if (avaliacao.getId_usuario() == null
                 || avaliacao.getId_filme() == null
-                || avaliacao.getNota() == null || avaliacao.getNota() < 0.0 && avaliacao.getNota() > 5.0
-                || avaliacao.getComentario() == null || avaliacao.getComentario().isBlank();
+                || avaliacao.getNota() == null || avaliacao.getNota() < 0 || avaliacao.getNota() > 5
+                || avaliacao.getComentario() == null || avaliacao.getComentario().isBlank()) {
+            throw new IllegalArgumentException("Dados da avaliação inválidos");
+        }
     }
 
-    public Boolean isIdExiste(Integer idUsuario, Integer idFilme) {
-        String sql = "SELECT usuario_id_usuario AS id_usuario, filme_id_filme AS id_filme, nota, comentario FROM avaliacao";
-
-        List<Avaliacao> avaliacoes = template.query(sql,
-                new BeanPropertyRowMapper<>(Avaliacao.class));
-
-        for (Avaliacao avaliacao : avaliacoes) {
-            if(avaliacao.getId_usuario().equals(idUsuario) && avaliacao.getId_filme().equals(idFilme)){
-                return true;
-            }
+    public void isIdExiste(Integer idUsuario, Integer idFilme) {
+        if (!repository.existsById(idUsuario, idFilme)) {
+            throw new NotFoundException("Avaliação não encontrada para usuario " + idUsuario + " e filme " + idFilme);
         }
+    }
 
-        return false;
+    public void isIdNaoExiste(Integer idUsuario, Integer idFilme) {
+        if (repository.existsById(idUsuario, idFilme)) {
+            throw new AvaliacaoAlreadyExistsException("Já existe uma avaliação para usuario " + idUsuario + " e filme " + idFilme);
+        }
     }
 }
