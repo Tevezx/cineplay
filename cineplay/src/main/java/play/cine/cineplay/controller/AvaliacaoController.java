@@ -33,10 +33,11 @@ public class AvaliacaoController {
 
     @PutMapping("{idUsuario}/{idFilme}")
     public ResponseEntity<AvaliacaoResponseDto> updateById(@PathVariable Integer idUsuario, @PathVariable Integer idFilme, @RequestBody AvaliacaoRequestDto avaliacaoRequestDto) {
-        var avaliacao = avaliacaoRequestDto.toEntity();
-        avaliacao.setId_usuario(idUsuario);
-        avaliacao.setId_filme(idFilme);
+        if (!idUsuario.equals(avaliacaoRequestDto.id_usuario()) || !idFilme.equals(avaliacaoRequestDto.id_filme())) {
+            return ResponseEntity.badRequest().build();
+        }
 
+        var avaliacao = avaliacaoRequestDto.toEntity();
         var avaliacaoAtualizada = service.updateById(idUsuario, idFilme, avaliacao);
         return ResponseEntity.ok(AvaliacaoResponseDto.fromEntity(avaliacaoAtualizada));
     }

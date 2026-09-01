@@ -32,9 +32,9 @@ public class UsuarioService {
 
     public Usuario updateById(Integer id, Usuario usuario){
         usuarioValidator.isIdExiste(id);
-        usuarioValidator.isIdExiste(usuario.getId());
         usuarioValidator.isUsuarioValido(usuario);
         usuarioValidator.isEmailValido(usuario.getEmail());
+        usuarioValidator.isEmailExiste(id, usuario.getEmail());
         usuarioValidator.isCpfValido(usuario.getCpf());
 
         return repository.updateById(id, usuario);
