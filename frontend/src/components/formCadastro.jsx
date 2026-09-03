@@ -1,10 +1,15 @@
+import { useState } from 'react';
+
 export function FormCadastro() {
-    const [formData, setFormData] = useState({
+    const [dados, setDados] = useState({
         cpf: '',
         nome: '',
         email: '',
         senha: '',
     });
+
+    const [loading, setLoading] = useState(false);
+    const [messagem, setMessagem] = useState('');
 
     return (
         <form>

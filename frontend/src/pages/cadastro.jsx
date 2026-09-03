@@ -1,4 +1,5 @@
 import { Header } from '../components/header';
+import { FormCadastro } from '../components/formCadastro';
 
 function Cadastro(){
     return(
@@ -7,7 +8,9 @@ function Cadastro(){
                 { name: 'Cadastro', url: '/cadastro', isActive: true },
                 { name: 'Login', url: '/login', isActive: false },
             ]} />
-        </div>
+
+            <FormCadastro />
+        </div>  
     );
 }
 
