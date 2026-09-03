@@ -1,10 +1,14 @@
 .header {
   background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-  padding: 1.5rem 2rem;
+  padding: 0.75rem 2rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   position: sticky;
   top: 0;
   z-index: 100;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  position: relative;
 }
 
 .nav {
@@ -12,7 +16,9 @@
   margin: 0 auto;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
+  width: 100%;
+  position: relative;
 }
 
 .navList {
@@ -25,9 +31,12 @@
 }
 
 .logo {
-  height: 40px;
+  height: 300px;
   width: auto;
   transition: transform 0.3s ease;
+  background-color: transparent;
+  position: absolute;
+  left: 2rem;
 }
 
 .logo:hover {
@@ -50,7 +59,7 @@
 }
 
 .navLink:hover {
-  color: #ff6b6b;
+  color: #F2B705;
 }
 
 .navLink::after {
@@ -60,11 +69,19 @@
   left: 0;
   width: 0;
   height: 2px;
-  background: #ff6b6b;
+  background: #F2B705;
   transition: width 0.3s ease;
 }
 
 .navLink:hover::after {
+  width: 100%;
+}
+
+.navLinkActive {
+  color: #F2B705;
+}
+
+.navLinkActive::after {
   width: 100%;
 }
 

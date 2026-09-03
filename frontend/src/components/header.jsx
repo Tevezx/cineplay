@@ -9,7 +9,10 @@ export function Header(props) {
         <ul className={styles.navList}>
           {props.links.map(link => (
             <li key={link.name} className={styles.navItem}>
-              <a href={link.url} className={styles.navLink}>
+              <a
+                href={link.url}
+                className={`${styles.navLink} ${link.isActive ? styles.navLinkActive : ''}`}
+              >
                 {link.name}
               </a>
             </li>
