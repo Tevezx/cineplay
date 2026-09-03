@@ -4,7 +4,8 @@ function Cadastro(){
     return(
         <div>
             <Header links={[
-                { name: 'Home', url: '/' },
+                { name: 'Cadastro', url: '/cadastro' },
+                { name: 'Login', url: '/login' },
             ]} />
         </div>
     );
