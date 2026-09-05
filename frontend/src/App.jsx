@@ -1,10 +1,10 @@
-import './App.css'
+import Cadastro from './pages/cadastro'
 
 function App() {
 
   return (
     <div>
-      <h1>Welcome to Cineplay</h1>
+      <Cadastro></Cadastro>
     </div>
   )
 }
