@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import logo from '../assets/logo.png';
 import styles from '../styles/Header.module.css';
 
@@ -9,12 +10,12 @@ export function Header(props) {
         <ul className={styles.navList}>
           {props.links.map(link => (
             <li key={link.name} className={styles.navItem}>
-              <a
-                href={link.url}
+              <Link
+                to={link.url}
                 className={`${styles.navLink} ${link.isActive ? styles.navLinkActive : ''}`}
               >
                 {link.name}
-              </a>
+              </Link>
             </li>
           ))}
         </ul>

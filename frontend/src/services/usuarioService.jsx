@@ -12,7 +12,7 @@ export const cadastrarUsuario = async (usuario) => {
 
 export const loginUsuario = async (credenciais) => {
     try{
-        const response = await api.post('/usuarios/login', credenciais);
+        const response = await api.post('/login', credenciais);
         return response.data;
     } catch(error){
         console.log("Erro no service de login: ", error.response?.data || error.message);

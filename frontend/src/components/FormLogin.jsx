@@ -3,21 +3,10 @@ import { loginUsuario } from '../services/usuarioService';
 import styles from '../styles/formCadastro.module.css';
 import imagemCadastro from '../assets/imagem_cadastro.jpg';
 
-const formatarCPF = (value) => {
-    return value
-        .replace(/\D/g, "")
-        .replace(/(\d{3})(\d)/, "$1.$2") 
-        .replace(/(\d{3})(\d)/, "$1.$2") 
-        .replace(/(\d{3})(\d{1,2})$/, "$1-$2") 
-        .substring(0, 14); 
-};
-
 export function FormLogin() {
     const [dados, setDados] = useState({
-        cpf: '',
-        nome: '',
         email: '',
-        senha: '',
+        senha: ''
     });
 
     const login = async (event) => {
@@ -39,12 +28,6 @@ export function FormLogin() {
                 <h2>Login</h2>
                 <p className={styles.subtitle}>Preencha os dados abaixo para acessar sua conta.</p>
                 <form onSubmit={login}>
-                    <div className={styles.group}>
-                        <input type="text" placeholder='CPF' name="cpf" value={dados.cpf} onChange={(e)=>setDados({...dados, cpf: formatarCPF(e.target.value)})} />
-                    </div>
-                    <div className={styles.group}>
-                        <input type="text" placeholder='Nome' name="nome" value={dados.nome} onChange={(e)=>setDados({...dados, nome: e.target.value})} />
-                    </div>
                     <div className={styles.group}>
                         <input type="email" placeholder='Email' name="email" value={dados.email} onChange={(e)=>setDados({...dados, email: e.target.value})} />
                     </div>

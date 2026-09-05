@@ -36,7 +36,7 @@ export function FormCadastro() {
             <div className={styles.overlay} />
             <div className={styles.container}>
                 <p className={styles.brand}>CINEPLAY</p>
-                <h2>Criar conta</h2>
+                <h2>Cadastre-se</h2>
                 <p className={styles.subtitle}>Preencha os dados abaixo para começar a avaliar.</p>
                 <form onSubmit={cadastrar}>
                     <div className={styles.group}>
