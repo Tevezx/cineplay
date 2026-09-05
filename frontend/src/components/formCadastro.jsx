@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { cadastrarUsuario } from '../services/usuarioService';
 import styles from '../styles/formCadastro.module.css';
 import imagemCadastro from '../assets/imagem_cadastro.jpg';
@@ -20,11 +21,14 @@ export function FormCadastro() {
         senha: '',
     });
 
+    const navigate = useNavigate();
+
     const cadastrar = async (event) => {
         event.preventDefault();
         try{
             await cadastrarUsuario(dados);
             alert('Usuário cadastrado com sucesso!');
+            navigate('/Login');
         }
         catch(error){
             alert('Erro ao cadastrar usuário: ' + (error.response?.data?.message || error.message));
