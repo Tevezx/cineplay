@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { cadastrarUsuario } from '../services/usuarioService';
+import styles from '../styles/formCadastro.module.css';
+import imagemCadastro from '../assets/imagem_cadastro.jpg';
 
 const formatarCPF = (value) => {
     return value
@@ -30,24 +32,28 @@ export function FormCadastro() {
     }
 
     return (
-        <form onSubmit={cadastrar}>
-            <div>
-                <label>CPF:</label>
-                <input type="text" placeholder='000.000.000-00' name="cpf" value={dados.cpf} onChange={(e)=>setDados({...dados, cpf: formatarCPF(e.target.value)})} />
+        <div className={styles.wrapper} style={{ backgroundImage: `url(${imagemCadastro})` }}>
+            <div className={styles.overlay} />
+            <div className={styles.container}>
+                <p className={styles.brand}>CINEPLAY</p>
+                <h2>Criar conta</h2>
+                <p className={styles.subtitle}>Preencha os dados abaixo para começar a assistir.</p>
+                <form onSubmit={cadastrar}>
+                    <div className={styles.group}>
+                        <input type="text" placeholder='CPF' name="cpf" value={dados.cpf} onChange={(e)=>setDados({...dados, cpf: formatarCPF(e.target.value)})} />
+                    </div>
+                    <div className={styles.group}>
+                        <input type="text" placeholder='Nome' name="nome" value={dados.nome} onChange={(e)=>setDados({...dados, nome: e.target.value})} />
+                    </div>
+                    <div className={styles.group}>
+                        <input type="email" placeholder='Email' name="email" value={dados.email} onChange={(e)=>setDados({...dados, email: e.target.value})} />
+                    </div>
+                    <div className={styles.group}>
+                        <input type="password" placeholder='Senha' name="senha" value={dados.senha} onChange={(e)=>setDados({...dados, senha: e.target.value})} />
+                    </div>
+                    <button type='submit' className={styles.submitBtn}>Cadastrar</button>
+                </form>
             </div>
-            <div>
-                <label>Nome:</label>
-                <input type="text" placeholder='Digite seu nome...' name="nome" value={dados.nome} onChange={(e)=>setDados({...dados, nome: e.target.value})} />
-            </div>
-            <div>
-                <label>Email:</label>
-                <input type="email" placeholder='Digite seu email...' name="email" value={dados.email} onChange={(e)=>setDados({...dados, email: e.target.value})} />
-            </div>
-            <div>
-                <label>Senha:</label>
-                <input type="password" placeholder='Digite sua senha...' name="senha" value={dados.senha} onChange={(e)=>setDados({...dados, senha: e.target.value})} />
-            </div>
-            <button type='submit'>Cadastrar</button>
-        </form>
+        </div>
     );
 }
