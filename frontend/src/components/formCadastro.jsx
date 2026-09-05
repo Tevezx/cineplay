@@ -1,6 +1,15 @@
 import { useState } from 'react';
 import { cadastrarUsuario } from '../services/usuarioService';
 
+const formatarCPF = (value) => {
+    return value
+        .replace(/\D/g, "")
+        .replace(/(\d{3})(\d)/, "$1.$2") 
+        .replace(/(\d{3})(\d)/, "$1.$2") 
+        .replace(/(\d{3})(\d{1,2})$/, "$1-$2") 
+        .substring(0, 14); 
+};
+
 export function FormCadastro() {
     const [dados, setDados] = useState({
         cpf: '',
@@ -24,7 +33,7 @@ export function FormCadastro() {
         <form onSubmit={cadastrar}>
             <div>
                 <label>CPF:</label>
-                <input type="text" placeholder='Digite seu cpf...' name="cpf" value={dados.cpf} onChange={(e)=>setDados({...dados, cpf: e.target.value})} />
+                <input type="text" placeholder='000.000.000-00' name="cpf" value={dados.cpf} onChange={(e)=>setDados({...dados, cpf: formatarCPF(e.target.value)})} />
             </div>
             <div>
                 <label>Nome:</label>
