@@ -37,7 +37,7 @@ export function FormCadastro() {
             <div className={styles.container}>
                 <p className={styles.brand}>CINEPLAY</p>
                 <h2>Criar conta</h2>
-                <p className={styles.subtitle}>Preencha os dados abaixo para começar a assistir.</p>
+                <p className={styles.subtitle}>Preencha os dados abaixo para começar a avaliar.</p>
                 <form onSubmit={cadastrar}>
                     <div className={styles.group}>
                         <input type="text" placeholder='CPF' name="cpf" value={dados.cpf} onChange={(e)=>setDados({...dados, cpf: formatarCPF(e.target.value)})} />
