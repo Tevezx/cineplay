@@ -128,6 +128,26 @@
     border-radius: 4px;
 }
 
+.deleteBtn {
+    margin-top: 8px;
+    padding: 8px 12px;
+    background: none;
+    border: 1px solid #C8102E;
+    border-radius: 6px;
+    color: #C8102E;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.deleteBtn:hover {
+    background: #C8102E;
+    color: #F6F1E7;
+}
+
 @media (max-width: 600px) {
     .wrapper {
         padding: 24px 20px;

@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { cadastrarFilme } from "../services/FilmeService";
-import styles from "../styles/ModalCadastroFilme.module.css";
+import { cadastrarFilme } from "../../services/FilmeService";
+import styles from "../../styles/ModalCadastroFilme.module.css";
 
 export function ModalCadastroFilme({ onClose, onCadastrado }) {
 

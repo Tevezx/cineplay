@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
-import { listarFilmes } from "../services/FilmeService";
+import { listarFilmes, deletarFilme } from "../services/FilmeService";
 import styles from "../styles/FilmesCadastrados.module.css";
-import { ModalCadastroFilme } from "./ModalCadastroFilme";
+import { ModalCadastroFilme } from "./modais/ModalCadastroFilme";
+import { ModalExclusao } from "./modais/ModalExclusão";
 
 export function FilmesCadastrados() {
     const [filmes, setFilmes] = useState([]);
     const [modalAberto, setModalAberto] = useState(false);
+    const [filmeParaExcluir, setFilmeParaExcluir] = useState(null);
 
     useEffect(() => {
         listarFilmes().then(setFilmes);
@@ -21,6 +23,20 @@ export function FilmesCadastrados() {
 
     function filmeCadastrado() {
         setModalAberto(false);
+        listarFilmes().then(setFilmes);
+    }
+
+    function abrirExclusao(filme) {
+        setFilmeParaExcluir(filme);
+    }
+
+    function fecharExclusao() {
+        setFilmeParaExcluir(null);
+    }
+
+    async function confirmarExclusao() {
+        await deletarFilme(filmeParaExcluir.id);
+        setFilmeParaExcluir(null);
         listarFilmes().then(setFilmes);
     }
 
@@ -49,6 +65,9 @@ export function FilmesCadastrados() {
                                 <span>{filme.duracao} min</span>
                                 <span>{filme.dataLancamento}</span>
                             </div>
+                            <button className={styles.deleteBtn} onClick={() => abrirExclusao(filme)}>
+                                Excluir
+                            </button>
                         </div>
                     </div>
                 ))}
@@ -58,6 +77,9 @@ export function FilmesCadastrados() {
             )}
             {modalAberto && (
                 <ModalCadastroFilme onClose={fecharModal} onCadastrado={filmeCadastrado} />
+            )}
+            {filmeParaExcluir && (
+                <ModalExclusao onClose={fecharExclusao} onExcluido={confirmarExclusao} />
             )}
         </div>
     );
