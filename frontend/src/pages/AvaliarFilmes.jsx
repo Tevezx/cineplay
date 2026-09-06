@@ -1,4 +1,5 @@
 import { Header } from "../components/Header";
+import { FilmesAvaliacao } from "../components/FilmesAvaliacao";
 
 export function AvaliarFilmes(){
     return (
@@ -9,6 +10,7 @@ export function AvaliarFilmes(){
                 { name: 'Login', url: '/Login', isActive: false },
                 { name: 'Avaliação', url: '/AvaliarFilmes', isActive: true },
             ]}/>
+            <FilmesAvaliacao />
         </div>
     );
 }

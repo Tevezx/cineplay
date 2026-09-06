@@ -1,4 +1,4 @@
-import api from '../api';
+import api from './Api';
 
 export const buscarAvaliacoes = async () => {
     try {
@@ -18,18 +18,18 @@ export const avaliarFilme = async (avaliacao) => {
     }
 };
 
-export const atualizarAvaliacao = async (id, avaliacao) => {
+export const atualizarAvaliacao = async (idUsuario, idFilme, avaliacao) => {
     try {
-        const response = await api.put(`/avaliacoes/${id}`, avaliacao);
+        const response = await api.put(`/avaliacoes/${idUsuario}/${idFilme}`, avaliacao);
         return response.data;
     } catch (error) {
         throw error;
     }
 };
 
-export const deletarAvaliacao = async (id) => {
+export const deletarAvaliacao = async (idUsuario, idFilme) => {
     try {
-        const response = await api.delete(`/avaliacoes/${id}`);
+        const response = await api.delete(`/avaliacoes/${idUsuario}/${idFilme}`);
         return response.data;
     } catch (error) {
         throw error;
