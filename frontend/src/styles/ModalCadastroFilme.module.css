@@ -1,0 +1,100 @@
+.overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(14, 13, 18, 0.75);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+}
+
+.modal {
+    position: relative;
+    width: 100%;
+    max-width: 440px;
+    max-height: 90vh;
+    overflow-y: auto;
+    background: #0E0D12;
+    border: 1px solid rgba(242, 183, 5, 0.25);
+    border-radius: 10px;
+    padding: 40px 32px 32px;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.65);
+}
+
+.closeBtn {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    background: none;
+    border: none;
+    color: #8A8D93;
+    font-size: 24px;
+    line-height: 1;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.closeBtn:hover {
+    color: #F6F1E7;
+}
+
+.title {
+    color: #F6F1E7;
+    font-size: 24px;
+    font-weight: 700;
+    margin: 0 0 24px;
+    text-align: center;
+}
+
+.input,
+.textarea {
+    width: 100%;
+    padding: 13px 14px;
+    margin-bottom: 14px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    background-color: #1B2A4A;
+    color: #F6F1E7;
+    box-sizing: border-box;
+    transition: box-shadow 0.2s ease;
+}
+
+.textarea {
+    resize: vertical;
+    min-height: 70px;
+    font-family: inherit;
+}
+
+.input:focus,
+.textarea:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px #F2B705;
+}
+
+.input::placeholder,
+.textarea::placeholder {
+    color: #8A8D93;
+}
+
+.submitBtn {
+    width: 100%;
+    padding: 14px;
+    margin-top: 6px;
+    background: #F2B705;
+    color: #0E0D12;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.submitBtn:hover {
+    background: #d9a204;
+}

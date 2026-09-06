@@ -5,13 +5,23 @@ import { ModalCadastroFilme } from "./ModalCadastroFilme";
 
 export function FilmesCadastrados() {
     const [filmes, setFilmes] = useState([]);
+    const [modalAberto, setModalAberto] = useState(false);
 
     useEffect(() => {
         listarFilmes().then(setFilmes);
     }, []);
 
     function cadastrarFilme() {
-        ModalCadastroFilme();
+        setModalAberto(true);
+    }
+
+    function fecharModal() {
+        setModalAberto(false);
+    }
+
+    function filmeCadastrado() {
+        setModalAberto(false);
+        listarFilmes().then(setFilmes);
     }
 
     return (
@@ -45,6 +55,9 @@ export function FilmesCadastrados() {
             </div>
             {filmes.length === 0 && (
                 <p className={styles.noFilmes}>Nenhum filme cadastrado.</p>
+            )}
+            {modalAberto && (
+                <ModalCadastroFilme onClose={fecharModal} onCadastrado={filmeCadastrado} />
             )}
         </div>
     );
