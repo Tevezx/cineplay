@@ -3,11 +3,13 @@ import { listarFilmes, deletarFilme } from "../services/FilmeService";
 import styles from "../styles/FilmesCadastrados.module.css";
 import { ModalCadastroFilme } from "./modais/ModalCadastroFilme";
 import { ModalExclusao } from "./modais/ModalExclusão";
+import { ModalEditar } from "./modais/ModalEditar";
 
 export function FilmesCadastrados() {
     const [filmes, setFilmes] = useState([]);
     const [modalAberto, setModalAberto] = useState(false);
     const [filmeParaExcluir, setFilmeParaExcluir] = useState(null);
+    const [filmeParaEditar, setFilmeParaEditar] = useState(null);
 
     useEffect(() => {
         listarFilmes().then(setFilmes);
@@ -40,6 +42,19 @@ export function FilmesCadastrados() {
         listarFilmes().then(setFilmes);
     }
 
+    function abrirEdicao(filme) {
+        setFilmeParaEditar(filme);
+    }
+
+    function fecharEdicao() {
+        setFilmeParaEditar(null);
+    }
+
+    function filmeEditado() {
+        setFilmeParaEditar(null);
+        listarFilmes().then(setFilmes);
+    }
+
     return (
         <div className={styles.wrapper}>
             <div className={styles.header}>
@@ -65,9 +80,14 @@ export function FilmesCadastrados() {
                                 <span>{filme.duracao} min</span>
                                 <span>{filme.dataLancamento}</span>
                             </div>
-                            <button className={styles.deleteBtn} onClick={() => abrirExclusao(filme)}>
-                                Excluir
-                            </button>
+                            <div className={styles.acoes}>
+                                <button className={styles.editBtn} onClick={() => abrirEdicao(filme)}>
+                                    Editar
+                                </button>
+                                <button className={styles.deleteBtn} onClick={() => abrirExclusao(filme)}>
+                                    Excluir
+                                </button>
+                            </div>
                         </div>
                     </div>
                 ))}
@@ -80,6 +100,9 @@ export function FilmesCadastrados() {
             )}
             {filmeParaExcluir && (
                 <ModalExclusao onClose={fecharExclusao} onExcluido={confirmarExclusao} />
+            )}
+            {filmeParaEditar && (
+                <ModalEditar filme={filmeParaEditar} onClose={fecharEdicao} onEditado={filmeEditado} />
             )}
         </div>
     );

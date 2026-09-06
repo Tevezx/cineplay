@@ -128,19 +128,39 @@
     border-radius: 4px;
 }
 
-.deleteBtn {
+.acoes {
+    display: flex;
+    gap: 8px;
     margin-top: 8px;
+}
+
+.editBtn,
+.deleteBtn {
+    flex: 1;
     padding: 8px 12px;
     background: none;
-    border: 1px solid #C8102E;
     border-radius: 6px;
-    color: #C8102E;
     font-size: 12px;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     cursor: pointer;
     transition: background 0.2s ease, color 0.2s ease;
+}
+
+.editBtn {
+    border: 1px solid #F2B705;
+    color: #F2B705;
+}
+
+.editBtn:hover {
+    background: #F2B705;
+    color: #0E0D12;
+}
+
+.deleteBtn {
+    border: 1px solid #C8102E;
+    color: #C8102E;
 }
 
 .deleteBtn:hover {
