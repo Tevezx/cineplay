@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { cadastrarUsuario } from '../services/usuarioService';
+import { cadastrarUsuario } from '../services/UsuarioService';
 import styles from '../styles/formCadastro.module.css';
 import imagemCadastro from '../assets/imagem_cadastro.jpg';
 

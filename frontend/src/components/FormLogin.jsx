@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { loginUsuario } from "../services/usuarioService";
+import { loginUsuario } from "../services/UsuarioService";
 import styles from "../styles/formCadastro.module.css";
 import imagemCadastro from "../assets/imagem_cadastro.jpg";
 
@@ -17,7 +17,7 @@ export function FormLogin() {
         try {
             await loginUsuario(dados);
             alert("Login realizado com sucesso!");
-            if (dados.email === "admin@cineplay.com") navigate("/CadastrarFilmes");
+            if (dados.email === "admin@cineplay.com") navigate("/CadastrarFilme");
             else navigate("/Filmes");
         } catch (error) {
             alert(
