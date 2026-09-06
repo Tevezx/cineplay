@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Cadastro from './pages/Cadastro';
 import Login from './pages/Login';
 import CadastrarFilme from './pages/CadastrarFilme';
+import { AvaliarFilmes } from './pages/AvaliarFilmes';
 
 function App() {
 
@@ -12,6 +13,7 @@ function App() {
         <Route path="/Cadastro" element={<Cadastro />} />
         <Route path="/Login" element={<Login />} />
         <Route path="/CadastrarFilme" element={<CadastrarFilme />} />
+        <Route path="/AvaliarFilmes" element={<AvaliarFilmes />} />
       </Routes>
     </BrowserRouter>
   )

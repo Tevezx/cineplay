@@ -15,10 +15,11 @@ export function FormLogin() {
     const login = async (event) => {
         event.preventDefault();
         try {
-            await loginUsuario(dados);
+            const usuario = await loginUsuario(dados);
+            localStorage.setItem("usuario", JSON.stringify(usuario));
             alert("Login realizado com sucesso!");
             if (dados.email === "admin@cineplay.com") navigate("/CadastrarFilme");
-            else navigate("/Filmes");
+            else navigate("/AvaliarFilmes");
         } catch (error) {
             alert(
                 "Erro ao realizar login: " +

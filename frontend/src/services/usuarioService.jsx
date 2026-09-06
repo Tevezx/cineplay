@@ -10,6 +10,16 @@ export const cadastrarUsuario = async (usuario) => {
     }
 }
 
+export const listarUsuarios = async () => {
+    try{
+        const response = await api.get('/usuarios');
+        return response.data;
+    } catch(error){
+        console.log("Erro no service do usuário: ", error.response?.data || error.message);
+        throw error;
+    }
+}
+
 export const loginUsuario = async (credenciais) => {
     try{
         const response = await api.post('/login', credenciais);
