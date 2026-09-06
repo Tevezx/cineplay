@@ -18,7 +18,7 @@ export function FormLogin() {
             await loginUsuario(dados);
             alert("Login realizado com sucesso!");
             if (dados.email === "admin@cineplay.com") navigate("/CadastrarFilme");
-            else navigate("/Filmes");
+            else navigate("/AvaliarFilmes");
         } catch (error) {
             alert(
                 "Erro ao realizar login: " +
