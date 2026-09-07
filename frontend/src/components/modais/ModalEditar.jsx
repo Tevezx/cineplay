@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { editarFilme } from "../../services/FilmeService";
+import { useLoading } from "../../context/LoadingContext";
 import styles from "../../styles/ModalCadastroFilme.module.css";
 
 export function ModalEditar({ filme, onClose, onEditado }){
@@ -14,14 +15,19 @@ export function ModalEditar({ filme, onClose, onEditado }){
         imagem_url: filme.imagem_url
     })
 
+    const { startLoading, stopLoading } = useLoading();
+
     async function salvarFilme(event){
         event.preventDefault();
         try{
+            startLoading();
             await editarFilme(filme.id, dados);
             onEditado?.();
         } catch (error) {
             console.error("Erro ao editar filme:", error);
             alert("Erro ao editar filme: " + (error.response?.data?.message || error.message));
+        } finally {
+            stopLoading();
         }
     }
 

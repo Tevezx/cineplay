@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { listarFilmes, deletarFilme } from "../services/FilmeService";
+import { useLoading } from "../context/LoadingContext";
 import styles from "../styles/FilmesCadastrados.module.css";
 import { ModalCadastroFilme } from "./modais/ModalCadastroFilme";
 import { ModalExclusao } from "./modais/ModalExclusão";
@@ -10,6 +11,7 @@ export function FilmesCadastrados() {
     const [modalAberto, setModalAberto] = useState(false);
     const [filmeParaExcluir, setFilmeParaExcluir] = useState(null);
     const [filmeParaEditar, setFilmeParaEditar] = useState(null);
+    const { startLoading, stopLoading } = useLoading();
 
     useEffect(() => {
         listarFilmes().then(setFilmes);
@@ -25,7 +27,8 @@ export function FilmesCadastrados() {
 
     function filmeCadastrado() {
         setModalAberto(false);
-        listarFilmes().then(setFilmes);
+        startLoading();
+        listarFilmes().then(setFilmes).finally(stopLoading);
     }
 
     function abrirExclusao(filme) {
@@ -37,9 +40,15 @@ export function FilmesCadastrados() {
     }
 
     async function confirmarExclusao() {
-        await deletarFilme(filmeParaExcluir.id);
-        setFilmeParaExcluir(null);
-        listarFilmes().then(setFilmes);
+        try {
+            startLoading();
+            await deletarFilme(filmeParaExcluir.id);
+            setFilmeParaExcluir(null);
+            const filmesAtualizados = await listarFilmes();
+            setFilmes(filmesAtualizados);
+        } finally {
+            stopLoading();
+        }
     }
 
     function abrirEdicao(filme) {
@@ -52,7 +61,8 @@ export function FilmesCadastrados() {
 
     function filmeEditado() {
         setFilmeParaEditar(null);
-        listarFilmes().then(setFilmes);
+        startLoading();
+        listarFilmes().then(setFilmes).finally(stopLoading);
     }
 
     return (

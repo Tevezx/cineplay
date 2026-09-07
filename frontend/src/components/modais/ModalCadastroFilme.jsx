@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { cadastrarFilme } from "../../services/FilmeService";
+import { useLoading } from "../../context/LoadingContext";
 import styles from "../../styles/ModalCadastroFilme.module.css";
 
 export function ModalCadastroFilme({ onClose, onCadastrado }) {
@@ -14,14 +15,19 @@ export function ModalCadastroFilme({ onClose, onCadastrado }) {
         imagem_url: ""
     })
 
+    const { startLoading, stopLoading } = useLoading();
+
     async function salvarFilme(event) {
         event.preventDefault();
         try {
+            startLoading();
             await cadastrarFilme(dados);
             onCadastrado?.();
         } catch (error) {
             console.error("Erro ao cadastrar filme:", error);
             alert("Erro ao cadastrar filme: " + (error.response?.data?.message || error.message));
+        } finally {
+            stopLoading();
         }
     }
 

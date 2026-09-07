@@ -1,16 +1,17 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { cadastrarUsuario } from '../services/UsuarioService';
+import { useLoading } from '../context/LoadingContext';
 import styles from '../styles/formCadastro.module.css';
 import imagemCadastro from '../assets/imagem_cadastro.jpg';
 
 const formatarCPF = (value) => {
     return value
         .replace(/\D/g, "")
-        .replace(/(\d{3})(\d)/, "$1.$2") 
-        .replace(/(\d{3})(\d)/, "$1.$2") 
-        .replace(/(\d{3})(\d{1,2})$/, "$1-$2") 
-        .substring(0, 14); 
+        .replace(/(\d{3})(\d)/, "$1.$2")
+        .replace(/(\d{3})(\d)/, "$1.$2")
+        .replace(/(\d{3})(\d{1,2})$/, "$1-$2")
+        .substring(0, 14);
 };
 
 export function FormCadastro() {
@@ -22,16 +23,20 @@ export function FormCadastro() {
     });
 
     const navigate = useNavigate();
+    const { startLoading, stopLoading } = useLoading();
 
     const cadastrar = async (event) => {
         event.preventDefault();
         try{
+            startLoading();
             await cadastrarUsuario(dados);
             alert('Usuário cadastrado com sucesso!');
             navigate('/Login');
         }
         catch(error){
             alert('Erro ao cadastrar usuário: ' + (error.response?.data?.message || error.message));
+        } finally {
+            stopLoading();
         }
     }
 
