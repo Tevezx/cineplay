@@ -6,8 +6,11 @@ import {
     atualizarAvaliacao,
     deletarAvaliacao,
 } from "../services/AvaliacaoService";
+import { useLoading } from "../context/LoadingContext";
 
-import { useState, useEffect } from "react";
+import {
+    useState
+} from "react";
 import styles from "../styles/FilmesCadastrados.module.css";
 import avaliacaoStyles from "../styles/FilmesAvaliacao.module.css";
 
@@ -18,14 +21,9 @@ export function FilmesAvaliacao() {
     const [avaliacoes, setAvaliacoes] = useState([]);
     const [usuarios, setUsuarios] = useState([]);
     const [rascunhos, setRascunhos] = useState({});
+    const { startLoading, stopLoading } = useLoading();
 
     const usuario = JSON.parse(localStorage.getItem("usuario") || "null");
-
-    useEffect(() => {
-        listarFilmes().then(setFilmes);
-        listarUsuarios().then(setUsuarios);
-        buscarAvaliacoes().then(setAvaliacoes);
-    }, []);
 
     function nomeDoUsuario(idUsuario) {
         if (usuario && idUsuario === usuario.id) return "Você";
@@ -41,25 +39,33 @@ export function FilmesAvaliacao() {
         };
 
         try {
+            startLoading();
             if (minhaAvaliacao) {
                 await atualizarAvaliacao(usuario.id, filme.id, payload);
             } else {
                 await avaliarFilme(payload);
             }
-            buscarAvaliacoes().then(setAvaliacoes);
+            const avaliacoesAtualizadas = await buscarAvaliacoes();
+            setAvaliacoes(avaliacoesAtualizadas);
         } catch (error) {
             console.error("Erro ao avaliar filme:", error);
             alert("Erro ao avaliar filme: " + (error.response?.data?.message || error.message));
+        } finally {
+            stopLoading();
         }
     }
 
     async function removerAvaliacao(filme) {
         try {
+            startLoading();
             await deletarAvaliacao(usuario.id, filme.id);
-            buscarAvaliacoes().then(setAvaliacoes);
+            const avaliacoesAtualizadas = await buscarAvaliacoes();
+            setAvaliacoes(avaliacoesAtualizadas);
         } catch (error) {
             console.error("Erro ao remover avaliação:", error);
             alert("Erro ao remover avaliação: " + (error.response?.data?.message || error.message));
+        } finally {
+            stopLoading();
         }
     }
 

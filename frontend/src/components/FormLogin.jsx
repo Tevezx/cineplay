@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { loginUsuario } from "../services/UsuarioService";
+import { useLoading } from "../context/LoadingContext";
 import styles from "../styles/formCadastro.module.css";
 import imagemCadastro from "../assets/imagem_cadastro.jpg";
 
@@ -11,10 +12,12 @@ export function FormLogin() {
     });
 
     const navigate = useNavigate();
+    const { startLoading, stopLoading } = useLoading();
 
     const login = async (event) => {
         event.preventDefault();
         try {
+            startLoading();
             const usuario = await loginUsuario(dados);
             localStorage.setItem("usuario", JSON.stringify(usuario));
             alert("Login realizado com sucesso!");
@@ -25,6 +28,8 @@ export function FormLogin() {
                 "Erro ao realizar login: " +
                 (error.response?.data?.message || error.message),
             );
+        } finally {
+            stopLoading();
         }
     };
 
