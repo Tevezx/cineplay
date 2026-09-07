@@ -9,7 +9,8 @@ import {
 import { useLoading } from "../context/LoadingContext";
 
 import {
-    useState
+    useState,
+    useEffect
 } from "react";
 import styles from "../styles/FilmesCadastrados.module.css";
 import avaliacaoStyles from "../styles/FilmesAvaliacao.module.css";
@@ -24,6 +25,18 @@ export function FilmesAvaliacao() {
     const { startLoading, stopLoading } = useLoading();
 
     const usuario = JSON.parse(localStorage.getItem("usuario") || "null");
+
+    useEffect(() => {
+        Promise.all([
+            listarFilmes(),
+            listarUsuarios(),
+            buscarAvaliacoes()
+        ]).then(([filmes, usuarios, avaliacoes]) => {
+            setFilmes(filmes);
+            setUsuarios(usuarios);
+            setAvaliacoes(avaliacoes);
+        });
+    }, []);
 
     function nomeDoUsuario(idUsuario) {
         if (usuario && idUsuario === usuario.id) return "Você";
