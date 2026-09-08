@@ -6,10 +6,11 @@ services:
       MYSQL_ROOT_PASSWORD: ${ENV_ROOT_PASSWORD}
       MYSQL_USER: ${ENV_MYSQL_USER}
       MYSQL_PASSWORD: ${ENV_MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${ENV_MYSQL_DATABASE}
     ports:
       - "3306:3306"
     volumes:
-      - cineplay-db:/var/lib/sql
+      - cineplay-db:/var/lib/mysql
 
 volumes:
   cineplay-db:
